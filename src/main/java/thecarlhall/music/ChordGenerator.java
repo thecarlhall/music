@@ -1,7 +1,6 @@
 package thecarlhall.music;
 
 public class ChordGenerator {
-    private static final String FORMAT = "%14s - %s, %s, %s, %s, %s, %s, %s, %s";
     private final Notes rootNote;
 
     public ChordGenerator(Notes rootNote) {
@@ -11,6 +10,8 @@ public class ChordGenerator {
     public void printScale(Modes mode) {
         Notes current = rootNote;
 
+        String format = "%15s - %s";
+
         int i = 0;
         String[] parts = new String[9];
         parts[i++] = mode.toString();
@@ -19,13 +20,19 @@ public class ChordGenerator {
         for (int interval : mode.intervals) {
             current = current.next(interval);
             parts[i++] = current.toString();
+            format += ", %s";
         }
 
-        System.out.println(String.format(FORMAT, parts));
+        System.out.println(String.format(format, parts));
     }
 
     public static void main(String[] argv) {
-        ChordGenerator generator = new ChordGenerator(Notes.C);
+        Notes root = Notes.C;
+        if (argv.length >= 1) {
+            root = Notes.valueOf(argv[0].toUpperCase());
+        }
+
+        ChordGenerator generator = new ChordGenerator(root);
         for (Modes mode : Modes.values()) {
             generator.printScale(mode);
         }
